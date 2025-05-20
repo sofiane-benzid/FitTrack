@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{% csrf_token %}">
+  <title>Fitness Tracker</title>
+  <link rel="stylesheet" href="{% static 'home/style.css' %}">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+</head>
+<body>
+<div class="app-container">
+  <!-- Header -->
+  <header>
+    <div class="logo">FitTrack</div>
+    <div class="header-actions">
+      <div class="user-profile">
+        <span class="user-greeting">{{ request.user.username }}</span>
+      </div>
+      <button class="icon-button">🔔</button>
+      <button class="icon-button">⚙️</button>
+      <button class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+      <a href="{% url 'logout' %}" class="login-button-header">Logout</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="content">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <ul>
+        <a href="{% url 'track' %}"><li {% if active_page == 'track' %}class="active"{% endif %}><span>🎯 TRACK</span></li></a>
+        <a href="{% url 'analytics' %}"><li {% if active_page == 'analytics' %}class="active"{% endif %}><span>📊 Analytics</span></li></a>
+        <a href="{% url 'achievements' %}"><li {% if active_page == 'achievements' %}class="active"{% endif %}><span>🏆 Achievements</span></li></a>
+        <a href="{%url 'aicoach' %}"><li {% if active_page == 'aicoach' %}class="active"{% endif %}><span>🤖 AI Coach</span></li></a>
+      </ul>
+    </nav>
+
+    <!-- Main Area -->
+    {% block content %}
+    {% endblock %}
+  </div>
+</div>
+<script src="{% static 'home/theme-toggle.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+{% extends "home/layout.html" %}
+{% load static %}
+
+{% block content %}
+<main class="main-content" id="analytics-page">
+    <div class="analytics-nav">
+        <button class="analytics-tab" data-tab="history-section">History</button>
+        <button class="analytics-tab" data-tab="charts-section">Charts</button>
+        <button class="analytics-tab" data-tab="goals-section">Goals</button>
+    </div>
+
+    <!-- History Section -->
+    <div class="analytics-section hidden" id="history-section">
+        <h2>Workout History</h2>
+        <div class="history-filters">
+            <select id="activityFilter" onchange="applyFilters()">
+                <option value="all" {% if activity_filter == 'all' %}selected{% endif %}>All Activities</option>
+                <option value="R" {% if activity_filter == 'R' %}selected{% endif %}>Running</option>
+                <option value="G" {% if activity_filter == 'G' %}selected{% endif %}>Gym Sessions</option>
+            </select>
+            <select id="dateFilter" onchange="applyFilters()">
+                <option value="all" {% if date_filter == 'all' %}selected{% endif %}>All Time</option>
+                <option value="7" {% if date_filter == '7' %}selected{% endif %}>Last 7 Days</option>
+                <option value="30" {% if date_filter == '30' %}selected{% endif %}>Last 30 Days</option>
+            </select>
+        </div>
+        <div class="history-table" id="historyTable">
+            <div class="history-header">
+                <span class="sortable" data-sort="date">Date</span>
+                <span class="sortable" data-sort="workout">Workout</span>
+                <span class="sortable" data-sort="details">Details</span>
+                <span class="sortable" data-sort="duration">Duration</span>
+            </div>
+            {% for session in sessions %}
+            <div class="history-row" data-session-id="{{ session.id }}" onclick="window.location.href='{% url 'session_detail' session.id %}'">
+                <span data-date="{{ session.completed_at|date:'Y-m-d H:i:s' }}">{{ session.completed_at|date:"D, j M Y" }}</span>
+                <span>{{ session.template.name }}</span>
+                <span class="details-content">
+                    {% if session.activity_type == 'R' %}
+                        <span class="detail-value" data-details="{{ session.distance|default:'0' }}" data-tooltip="Pace: {{ session.get_pace|default:'N/A' }}">{{ session.distance|default:"0" }} km</span>
+                    {% else %}
+                        {% with exercises=session.exercises.all %}
+                            <span class="detail-value" data-details="{{ exercises|length }}" data-tooltip="Exercises: {{ exercises|join:', '|default:'None' }}">{{ exercises|length }} exercise{{ exercises|length|pluralize }}</span>
+                        {% endwith %}
+                    {% endif %}
+                </span>
+                <span class="duration-content">
+                    <span class="detail-value" data-duration="{{ session.duration_seconds|default:'0' }}" data-tooltip="{{ session.duration_seconds|default:'0' }} seconds">{{ session.get_duration_display }}</span>
+                </span>
+            </div>
+            {% empty %}
+            <div class="history-row">
+                <span data-date="0">N/A</span>
+                <span>No workouts yet</span>
+                <span class="details-content">-</span>
+                <span class="duration-content">-</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="analytics-section hidden" id="charts-section">
+        <h2>Progress Charts</h2>
+
+        <!-- General Section -->
+        <div class="chart-group">
+            <h3>General</h3>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h4>Workout Frequency</h4>
+                    <div class="charts-controls">
+                        <select id="freqPeriodFilter" onchange="updateFrequencyChart()">
+                            <option value="daily" {% if freq_period == 'daily' %}selected{% endif %}>Daily</option>
+                            <option value="weekly" {% if freq_period == 'weekly' %}selected{% endif %}>Weekly</option>
+                            <option value="monthly" {% if freq_period == 'monthly' %}selected{% endif %}>Monthly</option>
+                        </select>
+                        <select id="freqActivityFilter" onchange="updateFrequencyChart()">
+                            <option value="all" {% if freq_activity_type == 'all' %}selected{% endif %}>All</option>
+                            <option value="R" {% if freq_activity_type == 'R' %}selected{% endif %}>Running</option>
+                            <option value="G" {% if freq_activity_type == 'G' %}selected{% endif %}>Gym</option>
+                        </select>
+                        <button class="time-range-toggle" data-chart="freq">
+                            {% if freq_time_range == 'all' %}
+                            Show Recent Data
+                            {% else %}
+                            Show All Time Data
+                            {% endif %}
+                        </button>
+                    </div>
+                    <canvas id="frequencyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Running Section -->
+        <div class="chart-group">
+            <h3>Running</h3>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h4>Running Distance Over Time</h4>
+                    <div class="charts-controls">
+                        <select id="distancePeriodFilter" onchange="updateDistanceChart()">
+                            <option value="daily" {% if dist_period == 'daily' %}selected{% endif %}>Daily</option>
+                            <option value="weekly" {% if dist_period == 'weekly' %}selected{% endif %}>Weekly</option>
+                            <option value="monthly" {% if dist_period == 'monthly' %}selected{% endif %}>Monthly</option>
+                        </select>
+                        <button class="time-range-toggle" data-chart="dist">
+                            {% if dist_time_range == 'all' %}
+                            Show Recent Data
+                            {% else %}
+                            Show All Time Data
+                            {% endif %}
+                        </button>
+                    </div>
+                    <canvas id="distanceChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h4>Running Pace Improvement</h4>
+                    <div class="charts-controls">
+                        <select id="pacePeriodFilter" onchange="updatePaceChart()">
+                            <option value="daily" {% if pace_period == 'daily' %}selected{% endif %}>Daily</option>
+                            <option value="weekly" {% if pace_period == 'weekly' %}selected{% endif %}>Weekly</option>
+                            <option value="monthly" {% if pace_period == 'monthly' %}selected{% endif %}>Monthly</option>
+                        </select>
+                        <button class="time-range-toggle" data-chart="pace">
+                            {% if pace_time_range == 'all' %}
+                            Show Recent Data
+                            {% else %}
+                            Show All Time Data
+                            {% endif %}
+                        </button>
+                    </div>
+                    <canvas id="paceChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gym Section -->
+        <div class="chart-group">
+            <h3>Gym</h3>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h4>Gym Strength Progress</h4>
+                    <div class="charts-controls">
+                        <select id="strengthPeriodFilter" onchange="updateStrengthChart()">
+                            <option value="daily" {% if strength_period == 'daily' %}selected{% endif %}>Daily</option>
+                            <option value="weekly" {% if strength_period == 'weekly' %}selected{% endif %}>Weekly</option>
+                            <option value="monthly" {% if strength_period == 'monthly' %}selected{% endif %}>Monthly</option>
+                        </select>
+                        <select id="strengthExerciseFilter" onchange="updateStrengthChart()">
+                            <option value="all" {% if strength_exercise == 'all' %}selected{% endif %}>All Exercises</option>
+                            {% for exercise in exercises %}
+                            <option value="{{ exercise }}" {% if strength_exercise == exercise %}selected{% endif %}>{{ exercise }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="time-range-toggle" data-chart="strength">
+                            {% if strength_time_range == 'all' %}
+                            Show Recent Data
+                            {% else %}
+                            Show All Time Data
+                            {% endif %}
+                        </button>
+                    </div>
+                    <canvas id="strengthChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h4>Volume Lifted</h4>
+                    <div class="charts-controls">
+                        <select id="volumePeriodFilter" onchange="updateVolumeChart()">
+                            <option value="daily" {% if volume_period == 'daily' %}selected{% endif %}>Daily</option>
+                            <option value="weekly" {% if volume_period == 'weekly' %}selected{% endif %}>Weekly</option>
+                            <option value="monthly" {% if volume_period == 'monthly' %}selected{% endif %}>Monthly</option>
+                        </select>
+                        <select id="volumeExerciseFilter" onchange="updateVolumeChart()">
+                            <option value="all" {% if volume_exercise == 'all' %}selected{% endif %}>All Exercises</option>
+                            {% for exercise in exercises %}
+                            <option value="{{ exercise }}" {% if volume_exercise == exercise %}selected{% endif %}>{{ exercise }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="time-range-toggle" data-chart="volume">
+                            {% if volume_time_range == 'all' %}
+                            Show Recent Data
+                            {% else %}
+                            Show All Time Data
+                            {% endif %}
+                        </button>
+                    </div>
+                    <canvas id="volumeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Goals Section -->
+    <div class="analytics-section hidden" id="goals-section">
+        <h2>Fitness Goals</h2>
+        <button class="configure-goals-button">✏️ Update Your Goals</button>
+        <div class="goals-grid">
+            <div class="goal-card">
+                <div class="goal-progress">{{ workout_progress_percent }}%</div>
+                <h3>Weekly Workouts</h3>
+                <p>
+                    <span id="completedWorkouts">{{ completed_workouts }}</span> of
+                    <span id="targetWorkouts">{{ goal.weekly_workouts|default:4 }}</span> completed
+                </p>
+            </div>
+            <div class="goal-card">
+                <div class="goal-progress">{{ distance_progress_percent }}%</div>
+                <h3>Weekly Running Distance</h3>
+                <p>
+                    <span id="completedDistance">{{ completed_distance|floatformat:1 }}</span>km of
+                    <span id="targetDistance">{{ goal.weekly_distance|default:20 }}</span>km
+                </p>
+            </div>
+        </div>
+        <dialog id="goalsDialog" class="goals-dialog">
+            <form id="goalsForm" class="goals-form">
+                {% csrf_token %}
+                <h3>Set Your Goals 🎯</h3>
+                <div class="form-group">
+                    <label for="weeklyWorkouts">How many workouts per week?</label>
+                    <input type="number" id="weeklyWorkouts" min="1" max="14" value="{{ goal.weekly_workouts|default:4 }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="weeklyDistance">Weekly running goal (km)</label>
+                    <input type="number" id="weeklyDistance" min="1" max="100" step="0.1" value="{{ goal.weekly_distance|default:20 }}" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-button">Cancel</button>
+                    <button type="submit" class="submit-button">Save Changes</button>
+                </div>
+            </form>
+        </dialog>
+    </div>
+</main>
+
+<!-- Load Chart.js and analytics.js -->
+<script>
+    window.frequencyData = {{ frequency_data|safe }};
+    window.distanceData = {{ distance_data|safe }};
+    window.paceData = {{ pace_data|safe }};
+    window.strengthData = {{ strength_data|safe }};
+    window.volumeData = {{ volume_data|safe }};
+    window.goalWorkouts = {{ goal_workouts|safe }};
+    window.goalDistance = {{ goal_distance|safe }};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js"></script>
+<script src="{% static 'home/analytics.js' %}"></script>
+{% endblock %}

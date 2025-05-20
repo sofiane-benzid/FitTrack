@@ -1,0 +1,81 @@
+{% extends "home/layout.html" %}
+{% load static %}
+
+{% block content %}
+<main class="main-content">
+    <div class="achievements-header">
+        <h2>🏆 Achievement Collection</h2>
+        <div class="achievement-stats">
+            <div class="stat">
+                <span class="stat-value">{{ earned_achievements_count }}</span>
+                <span class="stat-label">Total Badges</span>
+            </div>
+            <div class="level-progress">
+                <div class="level-info">
+                    <span class="level-number">{{ level_title }} Level {{ user.level }}</span>
+                    <span class="xp-info">{{ user.xp }} / {{ next_level_xp }} XP</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ xp_progress_percent }}%"></div>
+                </div>
+            </div>
+            <div class="stat">
+                <span class="stat-value">{{ completion_percent }}%</span>
+                <span class="stat-label">Completion</span>
+            </div>
+        </div>
+    </div>
+
+    <h3>Earned Achievements</h3>
+    <div class="achievements-grid">
+        {% for achievement in earned_achievements %}
+        <div class="achievement-card unlocked">
+            <div class="achievement-icon">{{ achievement.icon }}</div>
+            <div class="achievement-info">
+                <h4>{{ achievement.name }}</h4>
+                <p>{{ achievement.description }}</p>
+                <div class="achievement-date">Earned on {{ achievement.earned_at|date:"M d, Y" }}</div>
+                <div class="xp-reward">+{{ achievement.xp_reward }} XP</div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No achievements earned yet. Keep working out to unlock badges!</p>
+        {% endfor %}
+    </div>
+
+    <h3>In-Progress Achievements</h3>
+    <div class="achievements-grid">
+        {% for item in in_progress_achievements %}
+        <div class="achievement-card">
+            <div class="achievement-icon">{{ item.achievement.icon }}</div>
+            <div class="achievement-details">
+                <h3>{{ item.achievement.name }}</h3>
+                <p>{{ item.achievement.description }}</p>
+                <div class="progress-bubble">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ item.progress_percent }}%;"></div>
+                        <span class="progress-text">
+                    {% if item.achievement.criteria_type == 'run_count' %}
+                        {{ user_run_count }}/{{ item.achievement.criteria_value }} runs
+                    {% elif item.achievement.criteria_type == 'gym_count' %}
+                        {{ user_gym_count }}/{{ item.achievement.criteria_value }} workouts
+                    {% elif item.achievement.criteria_type == 'total_distance' %}
+                        {{ total_distance|floatformat:1 }}/{{ item.achievement.criteria_value }} km
+                    {% elif item.achievement.criteria_type == 'total_volume' %}
+                        {{ total_volume|floatformat:0 }}/{{ item.achievement.criteria_value }} kg
+                    {% elif item.achievement.criteria_type == 'streak' %}
+                        {{ streak }}/{{ item.achievement.criteria_value }} days
+                    {% elif item.achievement.criteria_type == 'total_workouts' %}
+                        {{ total_workouts }}/{{ item.achievement.criteria_value }} workouts
+                    {% endif %}
+                </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>All achievements earned!</p>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}

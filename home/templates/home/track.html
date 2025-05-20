@@ -1,0 +1,62 @@
+{% extends "home/layout.html" %}
+{% load static %}
+{% block content %}
+
+<main class="main-content">
+    <div class="page-header">
+        <h2>Your Workouts</h2>
+        <button class="add-button">
+            <span>New Workout</span>
+            <span class="plus-icon">+</span>
+        </button>
+    </div>
+    <div class="workout-list">
+        {% for item in templates_with_session_data %}
+        <div class="workout-item">
+            <div class="workout-info">
+                <div class="workout-info-main">
+                    <span>{{ item.template.name }}</span>
+                    <p>{{ item.template.get_activity_type_display }}</p>
+                </div>
+                <div class="workout-details">
+                    <div class="workout-detail">
+                        {% if item.template.activity_type == 'G' %}
+                        <span class="workout-detail-icon">⚡</span>
+                        <span>{{ item.template.get_exercise_count|default:"0" }} exercises</span>
+                        {% elif item.template.activity_type == 'R' %}
+                        <span class="workout-detail-icon">🏃</span>
+                        <span>{{ item.latest_distance|default:"0" }} km</span>
+                        {% endif %}
+                    </div>
+                    <div class="workout-detail">
+                        <span class="workout-detail-icon">⏱️</span>
+                        <span>
+                            {% if item.latest_duration %}
+                                {{ item.latest_duration }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="workout-actions">
+                <form action="{% url 'delete_template' item.template.id %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete {{ item.template.name }}?');">🗑️</button>
+                </form>
+                <a href="{% if item.template.activity_type == 'R' %}{% url 'start_run' item.template.id %}{% else %}{% url 'start_gym' item.template.id %}{% endif %}">
+                    <button class="start-button">START</button>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</main>
+<div id="workoutFormContainer"></div>
+
+<script>
+    const workoutFormURL = "{% url 'get_workout_form' %}";
+</script>
+<script src="{% static 'home/workout.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,378 @@
+
+.workout-session {
+    padding: 2rem;
+    padding-top: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 72px;
+}
+
+.workout-timer {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    font-family: monospace;
+}
+
+.finish-workout-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.finish-workout-button:hover {
+    transform: scale(1.05);
+}
+
+.workout-session-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.workout-session-header h1 {
+    font-size: 2rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.workout-meta {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.workout-meta .separator {
+    margin: 0 0.5rem;
+}
+
+.exercise-card {
+    background: white;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+}
+
+.exercise-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.exercise-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.exercise-footer {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.exercise-footer .add-set-button {
+    margin: 0;
+    flex: 1;
+}
+
+.remove-exercise-btn {
+    background-color: #fef2f2;
+    border: 1px solid #fee2e2;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.remove-exercise-btn:hover {
+    color: #dc2626;
+    background-color: #fee2e2;
+    transform: translateY(-1px);
+}
+
+.remove-set-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    opacity: 0;
+    transition: all 0.2s;
+    margin-left: 0.5rem;
+}
+
+.exercise-set:hover .remove-set-btn {
+    opacity: 1;
+}
+
+.remove-set-btn:hover {
+    color: #dc2626;
+    background-color: #fee2e2;
+    transform: scale(1.1);
+}
+
+.exercise-header h2 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.edit-name-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    font-size: 1rem;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.edit-name-button:hover {
+    opacity: 1;
+}
+
+.exercise-name-input {
+    font-size: 1.25rem;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    width: 200px;
+}
+
+.column-headers {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    background: none;
+}
+
+.column-headers .current-set {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.input-header {
+    text-align: left;
+}
+
+.complete-header {
+    text-align: center;
+    width: 2rem;
+}
+
+.exercise-sets {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    padding-top: 0;
+}
+
+.exercise-set {
+    display: grid;
+    grid-template-columns: 50px 150px 2fr 50px;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+    transition: background-color 0.2s; /* Smooth transition for background change */
+}
+
+.exercise-set.completed {
+    background-color: #e6ffe6; /* Light greenish color for the whole row */
+    border: 1px solid #86efac;
+}
+
+.set-number {
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.previous-result {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.current-set {
+    display: flex;
+    gap: 1rem;
+}
+
+.current-set input {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    width: 100%;
+}
+
+.complete-set {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.complete-set.completed {
+    background-color: #86efac;
+}
+
+.complete-set:hover {
+    transform: scale(1.1);
+}
+
+.add-set-button {
+    background-color: white;
+    color: var(--text-secondary);
+    border: 1px dashed var(--border-color);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    width: 100%;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.add-set-button:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: var(--hover-color);
+}
+
+.run-tracking {
+    padding: 2rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.input-group label {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.distance-input {
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-size: 1.25rem;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.reset-template-button {
+    background-color: var(--hover-color);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+}
+
+.reset-template-button:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: scale(1.05);
+}
+
+.reset-template-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+}
+
+.previous-data {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.previous-data p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 400;
+    background: var(--background-color);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    display: inline-block;
+}
+
+.add-exercise-container {
+    text-align: center;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.add-exercise-container.hidden {
+    display: none;
+}
+
+.add-exercise-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.add-exercise-button:hover {
+    transform: translateY(-2px);
+}

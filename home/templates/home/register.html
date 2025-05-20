@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - FitTrack</title>
+  <link rel="stylesheet" href="{% static 'home/style.css' %}">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+</head>
+<body>
+<div class="app-container login-container">
+  <div class="login-box">
+    <div class="logo">FitTrack</div>
+    <h2>Create Account</h2>
+    <p class="login-subtitle">Start your fitness journey today</p>
+    {% if message %}
+    <div class="login-error">
+      <span class="error-message">{{ message }}</span>
+    </div>
+    {% endif %}
+    <form method="post" action="{% url 'register' %}" class="login-form">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" placeholder="Enter your username" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" placeholder="Enter your email" required>
+      </div>
+      <div class="form-group">
+        <label for="gender">Gender</label>
+        <select id="gender" name="gender" required>
+          <option value="">Select gender</option>
+          <option value="F">Female</option>
+          <option value="M">Male</option>
+          <option value="O">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="fitness_level">Fitness Level</label>
+        <select name="fitness_level" id="fitness_level" required>
+          <option value="">Select fitness level</option>
+          <option value="B">Beginner</option>
+          <option value="I">Intermediate</option>
+          <option value="A">Advanced</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="Height">Height (cm)</label>
+        <input type="number" name="Height" id="Height" placeholder="Enter your height" required>
+      </div>
+      <div class="form-group">
+        <label for="Weight">Weight (kg)</label>
+        <input type="number" name="weight" id="Weight" placeholder="Enter your Weight" required>
+      </div>
+      <div class="form-group">
+      <label for="birth_date">Birth Date:</label>
+      <input type="date" name="birth_date" id="birth_date"><br>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" placeholder="Create a password" required>
+      </div>
+      <div class="form-group">
+        <label for="confirm-password">Confirm Password</label>
+        <input type="password" name="confirm-password" id="confirm-password" placeholder="Confirm your password" required>
+      </div>
+      <button type="submit" class="login-button">Create Account</button>
+    </form>
+    <p class="signup-prompt">
+      Already have an account? <a href="{% url 'login' %}">Log in</a>
+    </p>
+  </div>
+</div>
+</body>
+</html>

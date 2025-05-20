@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workout Session - FitTrack</title>
+  <link rel="stylesheet" href="{% static 'home/style.css' %}">
+  <link rel="stylesheet" href="{% static 'home/ws.css' %}">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+</head>
+<body>
+<div class="app-container">
+  <header>
+    <a href="{% url 'track' %}" class="logo">FitTrack</a>
+    <div class="workout-timer">00:00:00</div>
+    <button class="finish-workout-button">Finish Workout</button>
+  </header>
+
+  <main class="workout-session">
+    <div class="workout-session-header">
+      <h1 id="workoutTitle">Workout Title</h1>
+      {% if template.get_activity_type_display == "Gym Session" %}
+      <div class="workout-meta">
+        <span id="exerciseCount">0 exercises</span>
+        <span class="separator">•</span>
+        <span id="setCount">0 sets</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="exercise-list" id="sessionExercises">
+      <!-- Exercise items will be added here dynamically -->
+    </div>
+    <div id="addExerciseContainer" class="add-exercise-container hidden">
+      <button class="add-exercise-button">+ Add New Exercise</button>
+    </div>
+  </main>
+</div>
+<script>
+  const workoutType = "{{ template.get_activity_type_display }}";
+  const workoutData = {{ workout_data_json|safe }};
+  const csrfToken = "{{ csrf_token }}";
+</script>
+<script src="{% static 'home/workout-session.js' %}"></script>
+</body>
+</html>

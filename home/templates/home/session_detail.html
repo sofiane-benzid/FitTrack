@@ -1,0 +1,56 @@
+{% extends "home/layout.html" %}
+{% load static %}
+
+{% block content %}
+<main class="main-content workout-session">
+  <div class="workout-session-header">
+    <h1>{{ session.template.name }}</h1>
+    <div class="workout-meta">
+      <span>{{ session.completed_at|date:"D, j M Y, H:i" }}</span>
+      <span class="separator">•</span>
+      <span>{{ session.get_duration_display }}</span>
+      {% if session.activity_type == 'R' and session.get_pace %}
+      <span class="separator">•</span>
+      <span>Pace: {{ session.get_pace }} min/km</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="exercise-list" id="sessionExercises">
+    {% if session.activity_type == 'R' %}
+    <div class="exercise-card">
+      <h2>Distance Tracking</h2>
+      <div class="run-tracking">
+        <div class="distance-display">{{ session.distance|default:"0" }} km</div>
+      </div>
+    </div>
+    {% else %}
+    {% for exercise in session.exercises.all %}
+    <div class="exercise-card">
+      <h2>{{ exercise.exercise_name }}</h2>
+      <div class="exercise-sets">
+        <div class="column-headers">
+          <div class="set-number">Set</div>
+          <div class="input-header">Weight (kg)</div>
+          <div class="input-header">Reps</div>
+          <div class="complete-header">Done</div>
+        </div>
+        {% for set in exercise.sets.all %}
+        <div class="exercise-set completed">
+          <div class="set-number">{{ set.set_number }}</div>
+          <div class="weight-display">{{ set.weight|default:"-" }}</div>
+          <div class="reps-display">{{ set.reps|default:"-" }}</div>
+          <div class="complete-set completed">✓</div>
+        </div>
+        {% empty %}
+        <p>No completed sets recorded.</p>
+        {% endfor %}
+      </div>
+    </div>
+    {% empty %}
+    <p>No exercises recorded for this session.</p>
+    {% endfor %}
+    {% endif %}
+  </div>
+</main>
+{% endblock %}

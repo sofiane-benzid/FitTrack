@@ -1,0 +1,15 @@
+{% extends "home/layout.html" %}
+{% load static %}
+{% block content %}
+<main class="main-content">
+    <div class="chat-container">
+        <div class="chat-messages">
+        </div>
+        <div class="chat-input">
+            <input type="text" placeholder="Type your message..." id="message-input">
+            <button class="send-button">Send</button>
+        </div>
+    </div>
+</main>
+<script src="{% static 'home/aicoach.js' %}"></script>
+{% endblock %}
